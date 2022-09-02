@@ -5,15 +5,19 @@ import '@fontsource/roboto/700.css'
 
 import './App.css'
 
+import { Box } from '@mui/material'
 import Navbar from "./components/Navbar"
 import LibraryView from './views/LibraryView'
-import { Box } from '@mui/material'
+import DetailsView from './views/DetailsView'
 
 function App() {
   return (
     <Box component="div" className="app">
-        <Navbar />
-        <LibraryView />
+        {/*<Navbar />
+        <Box sx={{ paddingTop: '68px' }}>
+            <LibraryView />
+        </Box>*/}
+        <DetailsView />
     </Box>
   )
 }

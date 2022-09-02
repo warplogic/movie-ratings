@@ -3,7 +3,7 @@ import LibraryList from "../../components/LibraryList"
 
 const LibraryView = () => {
     return (
-        <Box sx={{ paddingTop: '68px' }}>
+        <Box>
             <LibraryList />
         </Box>
     )
