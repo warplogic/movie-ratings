@@ -2,10 +2,16 @@ import { Box, Card, CardActions, CardContent, CardMedia, Typography, Button, Fab
 import BackIcon from '@mui/icons-material/ArrowBack'
 import AddIcon from '@mui/icons-material/Add'
 
+import { useAppSelector, useAppDispatch } from '../../redux/hooks'
+import { setMovie } from '../../redux/slices/moviesSlice'
+
 const DetailsView = () => {
+    const { movies } = useAppSelector((state) => state.movies)
+    const dispatch = useAppDispatch()
+
     return (
         <Box sx={{ height: '100%' }}>
-            <Fab color="white" variant="circular" aria-label="back" size="small" sx={{ position: 'fixed', top: '20px', left: '20px' }}>
+            <Fab variant="circular" aria-label="back" size="small" sx={{ position: 'fixed', top: '20px', left: '20px' }}>
                 <BackIcon />
             </Fab>
             <Card sx={{ height: '100%', backgroundColor: '#343a40', color: '#FFF' }}>
@@ -25,7 +31,7 @@ const DetailsView = () => {
                                 2017
                             </Typography>
                         </Box>
-                        <Button variant="contained" size="small" startIcon={<AddIcon />} sx={{ backgroundColor: '#63e6be' }}>Add</Button>
+                        <Button onClick={() => dispatch(setMovie())} variant="contained" size="small" startIcon={<AddIcon />} sx={{ backgroundColor: '#63e6be' }}>Add</Button>
                     </Box>
                     {/*<Typography variant="body2">
                         Some kind of description

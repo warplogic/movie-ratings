@@ -8,16 +8,16 @@ import './App.css'
 import { Box } from '@mui/material'
 import Navbar from "./components/Navbar"
 import LibraryView from './views/LibraryView'
-import DetailsView from './views/DetailsView'
+// import DetailsView from './views/DetailsView'
 
 function App() {
   return (
     <Box component="div" className="app">
-        {/*<Navbar />
+        <Navbar />
         <Box sx={{ paddingTop: '68px' }}>
             <LibraryView />
-        </Box>*/}
-        <DetailsView />
+        </Box>
+        {/*<DetailsView />*/}
     </Box>
   )
 }
