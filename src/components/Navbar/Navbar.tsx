@@ -5,9 +5,14 @@ import BookIcon from '@mui/icons-material/Book'
 import VideoIcon from '@mui/icons-material/VideoCall'
 import SideMenu from '../SideMenu'
 
+import { useAppSelector, useAppDispatch } from '../../redux/hooks'
+import { toggle, SearchType } from '../../redux/slices/searchSlice'
+
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false)
-    const [test, setTest] = useState('ml')
+
+    const searchType = useAppSelector((state) => state.search.type)
+    const dispatch = useAppDispatch()
 
     const toggleMenu = (event: React.KeyboardEvent | React.MouseEvent): void => {
         if (event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
@@ -17,9 +22,9 @@ const Navbar = () => {
         setMenuOpen(false)
     }
 
-    const changeSearchType = (event: React.MouseEvent, value: string): void => {
+    const changeSearchType = (event: React.MouseEvent, value: SearchType): void => {
         if (value !== null) {
-            setTest(value);
+            dispatch(toggle(value))
         }
     }
 
@@ -33,15 +38,15 @@ const Navbar = () => {
                         </IconButton>
                         <InputBase sx={{ padding: 0, ml: 2, flex: 1, color: "#FFF" }} placeholder="Search" inputProps={{ 'aria-label': 'search' }} />
                         <ToggleButtonGroup
-                            value={test}
+                            value={searchType}
                             exclusive
                             onChange={changeSearchType}
                             aria-label="search type"
                         >
-                            <ToggleButton value="ml" aria-label="my library search">
+                            <ToggleButton value={SearchType.Library} aria-label="my library search">
                                 <BookIcon sx={{ color: '#FFF' }} />
                             </ToggleButton>
-                            <ToggleButton value="db" aria-label="database search">
+                            <ToggleButton value={SearchType.Database} aria-label="database search">
                                 <VideoIcon sx={{ color: '#FFF' }} />
                             </ToggleButton>
                         </ToggleButtonGroup>
