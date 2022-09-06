@@ -3,7 +3,7 @@
 ### React, MUI, Firebase
 
 ## To-do
-- implement react router
+- ~~implement react router~~
 - create a page for movie details - https://dribbble.com/shots/14821385-Shopping-App
 - implement search for movies from omdb api
 - implement redux or context to hold data - https://blog.openreplay.com/lightweight-alternatives-to-redux
