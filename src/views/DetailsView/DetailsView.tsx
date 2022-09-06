@@ -4,14 +4,24 @@ import AddIcon from '@mui/icons-material/Add'
 
 import { useAppSelector, useAppDispatch } from '../../redux/hooks'
 import { setMovie } from '../../redux/slices/moviesSlice'
+import { useNavigate } from 'react-router-dom'
 
 const DetailsView = () => {
     const { movies } = useAppSelector((state) => state.movies)
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+
+    const handleBack = () => navigate(-1)
 
     return (
         <Box sx={{ height: '100%' }}>
-            <Fab variant="circular" aria-label="back" size="small" sx={{ position: 'fixed', top: '20px', left: '20px' }}>
+            <Fab
+                onClick={handleBack}
+                variant="circular"
+                aria-label="back"
+                size="small"
+                sx={{ position: 'fixed', top: '20px', left: '20px' }}
+            >
                 <BackIcon />
             </Fab>
             <Card sx={{ height: '100%', backgroundColor: '#343a40', color: '#FFF' }}>
