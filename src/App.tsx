@@ -6,19 +6,25 @@ import '@fontsource/roboto/700.css'
 import './App.css'
 
 import { Box } from '@mui/material'
-import Navbar from "./components/Navbar"
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link
+} from 'react-router-dom'
 import LibraryView from './views/LibraryView'
-// import DetailsView from './views/DetailsView'
+import DetailsView from './views/DetailsView'
 
 function App() {
   return (
-    <Box component="div" className="app">
-        <Navbar />
-        <Box sx={{ paddingTop: '68px' }}>
-            <LibraryView />
+    <Router>
+        <Box component="div" className="app">
+            <Routes>
+                <Route path="/" element={<LibraryView />} />
+                <Route path="/details/:id" element={<DetailsView />} />
+            </Routes>
         </Box>
-        {/*<DetailsView />*/}
-    </Box>
+    </Router>
   )
 }
 
