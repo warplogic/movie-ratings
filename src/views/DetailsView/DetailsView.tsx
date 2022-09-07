@@ -7,7 +7,6 @@ import { setMovie } from '../../redux/slices/moviesSlice'
 import { useNavigate } from 'react-router-dom'
 
 const DetailsView = () => {
-    const { movies } = useAppSelector((state) => state.movies)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
@@ -41,7 +40,7 @@ const DetailsView = () => {
                                 2017
                             </Typography>
                         </Box>
-                        <Button onClick={() => dispatch(setMovie())} variant="contained" size="small" startIcon={<AddIcon />} sx={{ backgroundColor: '#63e6be' }}>Add</Button>
+                        <Button onClick={() => console.log('add')} variant="contained" size="small" startIcon={<AddIcon />} sx={{ backgroundColor: '#63e6be' }}>Add</Button>
                     </Box>
                     {/*<Typography variant="body2">
                         Some kind of description
