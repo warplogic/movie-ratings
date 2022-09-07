@@ -3,22 +3,24 @@ import MovieIcon from '@mui/icons-material/Movie'
 import { Link } from 'react-router-dom'
 
 interface LibraryItemProps {
-    hideDivider?: boolean
+    hideDivider?: boolean,
+    title: string,
+    year: string,
+    poster: string,
+    imdbId: string
 }
 
-const LibraryItem = ({ hideDivider }: LibraryItemProps) => {
+const LibraryItem = ({ hideDivider, title, year, poster, imdbId }: LibraryItemProps) => {
     return (
         <>
             <ListItem disablePadding>
-                <ListItemButton component={Link} to="/details/1">
+                <ListItemButton component={Link} to={`/details/${imdbId}`}>
                     <ListItemAvatar>
-                        <Avatar>
-                           <MovieIcon /> 
-                        </Avatar>
+                        <Avatar src={poster} />
                     </ListItemAvatar>
                     <ListItemText
-                        primary="Movie Title"
-                        secondary="Short description"
+                        primary={title}
+                        secondary={year}
                         primaryTypographyProps={{ sx: { color: '#FFF' } }}
                         secondaryTypographyProps={{ sx: { color: '#868e96' } }}
                     />
