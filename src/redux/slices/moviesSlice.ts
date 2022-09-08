@@ -75,7 +75,7 @@ export const moviesSlice = createSlice({
             .addCase(fetchMovieDetails.pending, (state, action: PayloadAction<any>) => {
                 state.status = 'details:loading'
             })
-            .addCase(fetchMovieDetails.fulfilled, (state, action: PayloadAction<object>) => {
+            .addCase(fetchMovieDetails.fulfilled, (state, action: PayloadAction<any>) => {
                 state.status = 'details:success'
                 state.details = {
                     title: action.payload.Title,
