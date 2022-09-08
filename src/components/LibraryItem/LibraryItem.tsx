@@ -1,6 +1,7 @@
 import { ListItem, ListItemAvatar, Avatar, ListItemText, Divider, ListItemButton} from '@mui/material'
-import MovieIcon from '@mui/icons-material/Movie'
 import { Link } from 'react-router-dom'
+import { useAppSelector, useAppDispatch } from '../../redux/hooks'
+import { fetchMovieDetails } from '../../redux/slices/moviesSlice'
 
 interface LibraryItemProps {
     hideDivider?: boolean,
@@ -11,10 +12,17 @@ interface LibraryItemProps {
 }
 
 const LibraryItem = ({ hideDivider, title, year, poster, imdbId }: LibraryItemProps) => {
+    const dispatch = useAppDispatch()
+
+    const handleItemClick = () => {
+        console.log('item clicked')
+        dispatch(fetchMovieDetails(imdbId))
+    }
+
     return (
         <>
             <ListItem disablePadding>
-                <ListItemButton component={Link} to={`/details/${imdbId}`}>
+                <ListItemButton onClick={handleItemClick} component={Link} to={`/details/${imdbId}`}>
                     <ListItemAvatar>
                         <Avatar src={poster} />
                     </ListItemAvatar>
