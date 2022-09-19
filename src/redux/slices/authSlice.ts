@@ -1,50 +1,71 @@
-import { createSlice, nanoid, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store'
-import { attemptSignIn } from '../../firebase/auth'
+import { attemptSignIn, attemptSignOut } from '../../firebase/auth'
 
-export interface ILoginParameters {
+interface ILoginUser {
+    uid: string,
+    accessToken: string
+}
+
+export interface ILoginCredentials {
     email: string,
     password: string
 }
 
-interface AuthState {
-    token: string
+interface IAuthState {
+    uid: string,
+    accessToken: string,
+    status: string
 }
 
-const initialState: AuthState = {
-    token: ''
+const initialState: IAuthState = {
+    uid: '',
+    accessToken: '',
+    status: ''
 }
 
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        attemptLogin: (state, action: PayloadAction<ILoginParameters>) => {
-            attemptSignIn(action.payload.email, action.payload.password)
+        logout: (state) => {
+            attemptSignOut()
+
+            state.uid = ''
+            state.accessToken = ''
         }
     },
     extraReducers(builder) {
-        //builder
-        //    .addCase(fetchAllMovies.pending, (state, action: PayloadAction<any>) => {
-        //        state.status = 'fetchAll:loading'
-        //    })
+        builder
+            .addCase(asyncLogin.pending, (state, action: PayloadAction<any>) => {
+                state.status = 'login:loading'
+            })
+            .addCase(asyncLogin.fulfilled, (state, action: PayloadAction<any>) => {
+                state.status = 'login:success'
+                state.uid = action.payload.uid
+                state.accessToken = action.payload.accessToken
+            })
+            .addCase(asyncLogin.rejected, (state, action: PayloadAction<any>) => {
+                state.status = 'login:failed'
+            })
     }
 })
 
-export const { attemptLogin } = authSlice.actions
+export const { logout } = authSlice.actions
 
-//export const selectAllMovies = (state: RootState) => state.movies.movies
+export const currentUser = (state: RootState) => state.auth.uid
 
 export default authSlice.reducer
 
-//export const fetchAllMovies = createAsyncThunk<any, void, { state: RootState }>('movies/get', async (_, { getState }) => {
-//    try {
-//        const { movies } = getState()
-//        const response = await fetch(`${import.meta.env.VITE_API_URL}&s=${encodeURIComponent(movies.searchTerm)}`)
-//        const body = await response.json()
-//        return body
-//    } catch (error) {
-//        console.log(error)
-//    }
-//})
+export const asyncLogin = createAsyncThunk<ILoginUser, ILoginCredentials, { state: RootState }>('auth/login', async (credentials, { getState }) => {
+    try {
+        const attempt = await attemptSignIn(credentials.email, credentials.password)
+        return {
+            uid: attempt.user.uid,
+            accessToken: attempt.user.accessToken
+        }
+    } catch (error) {
+        console.log(error)
+    }
+})

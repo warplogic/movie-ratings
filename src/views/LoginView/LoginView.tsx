@@ -1,14 +1,20 @@
 import { Box, Button, TextField, Typography } from "@mui/material"
 import { useState } from "react"
+import { Navigate } from "react-router-dom"
 
 import { useAppSelector, useAppDispatch } from '../../redux/hooks'
-import { attemptLogin } from '../../redux/slices/authSlice'
+import { asyncLogin, currentUser, logout } from '../../redux/slices/authSlice'
 
 const LoginView = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
     const dispatch = useAppDispatch()
+    const user = useAppSelector(currentUser)
+
+    if (user) {
+        return <Navigate to="/" />
+    }
 
     const updateEmail = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
         setEmail(event.target.value)
@@ -19,7 +25,11 @@ const LoginView = () => {
     }
 
     const tryLogin = () => {
-       dispatch(attemptLogin({ email, password }))
+       dispatch(asyncLogin({ email, password }))
+    }
+
+    const tryLogout = () => {
+        dispatch(logout())
     }
 
     return (
@@ -31,6 +41,7 @@ const LoginView = () => {
                     <TextField onChange={updatePassword} label="Password" variant="outlined" type="password" />
                 </Box>
                 <Button onClick={tryLogin} variant="contained" sx={{ backgroundColor: '#099268' }}>Login</Button>
+                <Button onClick={tryLogout} variant="contained" sx={{ backgroundColor: '#099268' }}>Logout</Button>
             </Box>
         </Box>
     )

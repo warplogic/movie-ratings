@@ -14,14 +14,29 @@ import {
 import LibraryView from './views/LibraryView'
 import DetailsView from './views/DetailsView'
 import LoginView from './views/LoginView'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
     return (
             <Router>
                 <Box component="div" className="app">
                     <Routes>
-                        <Route path="/" element={<LibraryView />} />
-                        <Route path="/details/:id" element={<DetailsView />} />
+                        <Route
+                            path="/" 
+                            element={
+                                <ProtectedRoute>
+                                    <LibraryView />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route 
+                            path="/details/:id"
+                            element={
+                                <ProtectedRoute>
+                                    <DetailsView />
+                                </ProtectedRoute>
+                            } 
+                        />
                         <Route path="/login" element={<LoginView />} />
                     </Routes>
                 </Box>
