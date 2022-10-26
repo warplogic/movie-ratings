@@ -4,7 +4,8 @@ import SyncIcon from '@mui/icons-material/Sync'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import ListIcon from '@mui/icons-material/List'
 import AddIcon from '@mui/icons-material/Add'
-import { createNewList, getAllLists, List as ListType } from '../../firebase/queries'
+import CrossIcon from '@mui/icons-material/Close'
+import { createNewList, getAllLists, List as ListType, deleteList } from '../../firebase/queries'
 
 interface SideMenuProps {
     isOpen: boolean,
@@ -30,6 +31,11 @@ const SideMenu = ({ isOpen, toggle }: SideMenuProps) => {
         setRefreshing(true)
     }
 
+    const deleteListHandler = (id: string): void => {
+        deleteList(id)
+        setRefreshing(true)
+    }
+
     const refreshLists = async (): Promise<void> => {
         const data = await getAllLists()
         setListElements(data)
@@ -41,12 +47,13 @@ const SideMenu = ({ isOpen, toggle }: SideMenuProps) => {
             <Box sx={{ width: 250, height: '100%', backgroundColor: '#343a40', color: '#FFF' }}>
                 <List>
                     {listElements.map((list, _) => (
-                            <ListItem key={list.label} disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        {/*index === 0 ? <TaskAltIcon sx={{ color: '#FFF' }} /> : index === 1 ? <SyncIcon sx={{ color: '#FFF' }} /> : <ListIcon sx={{ color: '#FFF' }} />*/}
-                                        <ListIcon sx={{ color: '#FFF' }} />
+                            <ListItem key={list.id} disablePadding>
+                                <ListItemButton onClick={() => deleteListHandler(list.id)} sx={{ width: '25%', display: 'flex', justifyContent: 'center' }}>
+                                    <ListItemIcon sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                                        <CrossIcon sx={{ color: '#FFF' }} />
                                     </ListItemIcon>
+                                </ListItemButton>
+                                <ListItemButton sx={{ width: '75%' }}>
                                     <ListItemText primary={list.label} />
                                 </ListItemButton>
                             </ListItem>
