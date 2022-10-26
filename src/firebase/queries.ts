@@ -1,13 +1,11 @@
 import { app } from './initialise'
-import { getFirestore, collection, getDocs, doc, setDoc} from 'firebase/firestore/lite'
-
-type Movie = {
-    title: string
-}
+import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, getDoc, setDoc } from 'firebase/firestore/lite'
+import { SingleMovie } from '../redux/slices/moviesSlice'
 
 export type List = {
+    id: string,
     label: string,
-    movies: Array<Movie>
+    movies?: SingleMovie[]
 }
 
 const db = getFirestore(app)
@@ -17,19 +15,53 @@ export const getAllLists = async (): Promise<List[]> => {
     const querySnapshot = await getDocs(collection(db, "lists"))
     querySnapshot.forEach((doc) => {
         const docData: List = {
-            label: doc.id,
-            movies: doc.data().movies
+            id: doc.id,
+            label: doc.data().label,
         }
         lists.push(docData)
     })
 
     return lists
 } 
-const getList = () => {}
+
+export const getList = async (listId: string): Promise<List | boolean> => {
+    const docSnap = await getDoc(doc(db, "lists", listId))
+
+    if (docSnap.exists()) {
+        const docData: List = {
+            id: docSnap.id,
+            label: docSnap.data().label,
+            movies: docSnap.data().movies
+        }
+
+        return docData
+    } else {
+        return false
+    }
+}
+
 export const createNewList = async (listLabel: string): Promise<void> => {
-    await setDoc(doc(db, "lists", listLabel), {
+    await addDoc(collection(db, "lists"), {
+        label: listLabel,
         movies: []
     });
 }
-const addToList = () => {}
-const deleteList = () => {}
+
+export const addToList = async (listId: string, movie: SingleMovie): Promise<void> => {
+    const listToUpdate = await getList(listId)
+
+    if (listToUpdate) {
+        let theList = listToUpdate as List
+        theList.movies?.push(movie)
+        await setDoc(doc(db, "lists", theList.id), {
+            label: theList.label,
+            movies: theList.movies
+        })
+    } else {
+        console.log('no list found')
+    }
+}
+
+export const deleteList = async (listId: string): Promise<void> => {
+    await deleteDoc(doc(db, "lists", listId))
+}

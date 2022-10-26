@@ -1,17 +1,70 @@
-import { Box, Card, CardActions, CardContent, CardMedia, Typography, Button, Fab } from "@mui/material"
+import { Box, Card, CardActions, CardContent, CardMedia, Typography, Button, Fab, Dialog, DialogTitle, DialogContent, RadioGroup, FormControlLabel, Radio } from "@mui/material"
 import BackIcon from '@mui/icons-material/ArrowBack'
 import AddIcon from '@mui/icons-material/Add'
 
 import { useAppSelector, useAppDispatch } from '../../redux/hooks'
-import { selectMovieDetails } from '../../redux/slices/moviesSlice'
+import { selectMovieDetails, SingleMovie } from '../../redux/slices/moviesSlice'
 import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from "react"
+import { createNewList, getAllLists, addToList, List as ListType } from '../../firebase/queries'
 
 const DetailsView = () => {
+    const [refreshing, setRefreshing] = useState(true)
+    const [dialogOpen, setDialogOpen] = useState(false)
+    const [newListLabel, setNewListLabel] = useState('');
+    const [listElements, setListElements] = useState<ListType[]>([])
+    const [listToAddTo, setListToAddTo] = useState('')
     const details = useAppSelector(selectMovieDetails)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    const handleBack = () => navigate(-1)
+    useEffect(() => {
+        if (refreshing === true) (refreshLists)()
+    }, [refreshing])
+
+    const changeNewListLabel = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
+        setNewListLabel(event.target.value)
+    }
+
+    // TODO: Functionality to add list through dialog
+    const addNewListHandler = (): void => {
+        createNewList(newListLabel)
+        setNewListLabel('')
+        setRefreshing(true)
+    }
+
+    const handleBack = (): void => navigate(-1)
+
+    const openDialogHandler = (): void => {
+        setDialogOpen(true)
+    }
+
+    const closeDialogHandler = (): void => {
+        setDialogOpen(false)
+    }
+
+    const listChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setListToAddTo((event.target as HTMLInputElement).value);
+    };
+
+    const addToListHandler = (): void => {
+        let newMovie: SingleMovie = {
+            imdbID: details.id,
+            Title: details.title,
+            Year: details.year,
+            Poster: details.poster
+        }
+
+       addToList(listToAddTo, newMovie)
+       setDialogOpen(false)
+    }
+
+    // TODO: Refactor list state data to redux
+    const refreshLists = async (): Promise<void> => {
+        const data = await getAllLists()
+        setListElements(data)
+        setRefreshing(false)
+    }
 
     return (
         <Box sx={{ height: '100%' }}>
@@ -41,13 +94,24 @@ const DetailsView = () => {
                                 {details.year}
                             </Typography>
                         </Box>
-                        <Button onClick={() => console.log('add')} variant="contained" size="small" startIcon={<AddIcon />} sx={{ backgroundColor: '#63e6be' }}>Add</Button>
+                        <Button onClick={openDialogHandler} variant="contained" size="small" startIcon={<AddIcon />} sx={{ backgroundColor: '#63e6be' }}>Add</Button>
                     </Box>
-                    {/*<Typography variant="body2">
-                        Some kind of description
-                    </Typography>*/}
+                    <Typography variant="body2">
+                        Description
+                    </Typography>
                 </CardContent>
             </Card>
+            <Dialog open={dialogOpen} onClose={closeDialogHandler}>
+                <DialogTitle>Add to a List</DialogTitle>
+                <DialogContent dividers>
+                    <RadioGroup value={listToAddTo} onChange={listChangeHandler}>
+                        {listElements.map((list) => (
+                            <FormControlLabel key={list.id} value={list.id} control={<Radio />} label={list.label} />
+                        ))}
+                    </RadioGroup>
+                    <Button onClick={addToListHandler} variant="contained" size="small" sx={{ backgroundColor: '#63e6be' }}>Add</Button>
+                </DialogContent>
+            </Dialog>
         </Box>
     )
 }

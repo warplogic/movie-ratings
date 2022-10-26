@@ -7,14 +7,15 @@ export enum SearchType {
     API = 'API'
 }
 
-export interface SingleMovie {
+export type SingleMovie = {
     imdbID: string,
     Title: string,
     Year: string,
     Poster: string
 }
 
-export interface MovieDetails {
+export type MovieDetails = {
+    id: string,
     title: string,
     year: string,
     rated: string,
@@ -37,7 +38,7 @@ export interface MoviesState {
 
 const initialState: MoviesState = {
     movies: [],
-    details: { title: '', year: '', rated: '', genre: '', director: '', writer: '', actors: '', plot: '', poster: '' },
+    details: { id: '', title: '', year: '', rated: '', genre: '', director: '', writer: '', actors: '', plot: '', poster: '' },
     searchType: SearchType.API,
     searchTerm: '',
     status: '',
@@ -78,6 +79,7 @@ export const moviesSlice = createSlice({
             .addCase(fetchMovieDetails.fulfilled, (state, action: PayloadAction<any>) => {
                 state.status = 'details:success'
                 state.details = {
+                    id: action.payload.imdbID,
                     title: action.payload.Title,
                     year: action.payload.Year,
                     rated: action.payload.Rated,
